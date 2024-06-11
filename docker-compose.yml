@@ -9,7 +9,7 @@ services:
       - tpatDatabase
     ports:
       - "8009:8009"
-      - "8080:8080"
+      - "8084:8080"
     mem_limit: 4g
     logging:
       options:
@@ -38,8 +38,8 @@ services:
         max-file: "3"
       driver: "json-file"
     volumes: 
-      - /Users/jk90/opt/trustmarks/tat/files:/opt/tat/files
-      - /Users/jk90/opt/trustmarks/tat/files:/opt/tat/lucene
+      - /Users/matthew/projects/gtri/trustmark-tools-deploy/tat/files:/opt/tat/files
+      - /Users/matthew/projects/gtri/trustmark-tools-deploy/tat/files:/opt/tat/lucene
 
   tbr:
     build:
@@ -108,7 +108,7 @@ services:
     ports:
       - "3456:3306"
     volumes:
-      - /Users/jk90/opt/trustmarks/tat/db:/var/lib/mysql
+      - /Users/matthew/projects/gtri/trustmark-tools-deploy/tat/db:/var/lib/mysql
     healthcheck:
       test: "/usr/bin/mysql --user=tat_user \"--password=tat_pw_11\" --execute \"SHOW DATABASES;\""
       interval: 5s
@@ -154,3 +154,35 @@ services:
     - MYSQL_ROOT_PASSWORD=trpt_pw_11
     - MYSQL_DATABASE=trpt_db
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_RELATIVE_PATH: /auth
+      # Uncomment the following line to specify a custom JDBC_PARAMS, e.g., "useSSL=false"
+      # JDBC_PARAMS: ''
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    command:
+      - start-dev
+    volumes:
+      - /Users/matthew/projects/gtri/trustmark-tools-deploy/.data/keycloak-data:/opt/keycloak/data
+
+  postgres:
+    image: postgres:13
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - /Users/matthew/projects/gtri/trustmark-tools-deploy/.data/keycloak-db:/var/lib/postgresql/data
