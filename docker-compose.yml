@@ -10,6 +10,7 @@ services:
     ports:
       - "8009:8009"
       - "8084:8080"
+      - "8084:8080"
     mem_limit: 4g
     logging:
       options:
@@ -38,8 +39,8 @@ services:
         max-file: "3"
       driver: "json-file"
     volumes: 
-      - /Users/matthew/projects/gtri/trustmark-tools-deploy/tat/files:/opt/tat/files
-      - /Users/matthew/projects/gtri/trustmark-tools-deploy/tat/files:/opt/tat/lucene
+      - ./tat/files:/opt/tat/files
+      - ./tat/files:/opt/tat/lucene
 
   tbr:
     build:
@@ -108,7 +109,7 @@ services:
     ports:
       - "3456:3306"
     volumes:
-      - /Users/matthew/projects/gtri/trustmark-tools-deploy/tat/db:/var/lib/mysql
+      - ./tat/db:/var/lib/mysql
     healthcheck:
       test: "/usr/bin/mysql --user=tat_user \"--password=tat_pw_11\" --execute \"SHOW DATABASES;\""
       interval: 5s
@@ -175,7 +176,7 @@ services:
     command:
       - start-dev
     volumes:
-      - /Users/matthew/projects/gtri/trustmark-tools-deploy/.data/keycloak-data:/opt/keycloak/data
+      - ./.data/keycloak-data:/opt/keycloak/data
 
   postgres:
     image: postgres:13
@@ -185,4 +186,4 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
     volumes:
-      - /Users/matthew/projects/gtri/trustmark-tools-deploy/.data/keycloak-db:/var/lib/postgresql/data
+      - ./.data/keycloak-db:/var/lib/postgresql/data
