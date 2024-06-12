@@ -10,7 +10,6 @@ services:
     ports:
       - "8009:8009"
       - "8084:8080"
-      - "8084:8080"
     mem_limit: 4g
     logging:
       options:
